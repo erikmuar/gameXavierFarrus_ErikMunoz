@@ -26,7 +26,7 @@ let enemigo_velocidad = 0
 tiles.loadMap(tiles.createSmallMap(tilemap`map`))
 enemigo_velocidad = 50
 game.onUpdateInterval(500, function () {
-    nuevo_enemigo = sprites.create(assets.image`Enemigo`, SpriteKind.Enemy)
+    nuevo_enemigo = sprites.create(assets.image`enemigo`, SpriteKind.Enemy)
     tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
     nuevo_enemigo.vy = enemigo_velocidad
 })
