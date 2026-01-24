@@ -59,11 +59,25 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     	
     }
 })
+spriteutils.createRenderable(5, function (screen2) {
+    for (let value of sprites.allOfKind(SpriteKind.torre)) {
+        if (sprites.readDataString(value, "nombre") == "arquero") {
+            spriteutils.drawCircle(
+            screen2,
+            value.x,
+            value.y,
+            arquero_radio,
+            3
+            )
+        }
+    }
+})
 let nuevo_enemigo: Sprite = null
 let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
 let icono_arquero: Sprite = null
 let cursor: Sprite = null
+let arquero_radio = 0
 let enemigo_velocidad = 0
 tiles.loadMap(tiles.createSmallMap(tilemap`map`))
 enemigo_velocidad = 50
@@ -72,6 +86,7 @@ tiles.coverAllTiles(assets.tile`izquierda0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`arriba0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`derecha`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`doblesentido`, assets.tile`miMosaico`)
+arquero_radio = 24
 cursor = sprites.create(img`
     . . . . . . . . . f . . 
     . . . . . . . . f 1 f . 
