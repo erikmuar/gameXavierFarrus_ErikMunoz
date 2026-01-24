@@ -29,3 +29,5 @@ To edit this repository in MakeCode.
 <img width="1885" height="797" alt="image" src="https://github.com/user-attachments/assets/2e0273b5-b9fd-4b54-8a7e-8d6a8a82c49d" />
 
 <img width="1884" height="856" alt="image" src="https://github.com/user-attachments/assets/30b42c9a-52b5-4249-b917-2eabdc37e958" />
+
+<img width="1888" height="892" alt="image" src="https://github.com/user-attachments/assets/adb04e19-5586-45c2-9bb2-ed845a5c4d19" />
