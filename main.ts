@@ -1,5 +1,12 @@
 namespace SpriteKind {
     export const Icono = SpriteKind.create()
+    export const torre = SpriteKind.create()
+}
+function hacer_torre (nombre: string, imagen: Image, coste: number) {
+    torre_nueva = sprites.create(imagen, SpriteKind.torre)
+    sprites.setDataString(torre_nueva, "nombre", nombre)
+    sprites.setDataNumber(torre_nueva, "coste", coste)
+    return torre_nueva
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (cursor.overlapsWith(icono_arquero)) {
@@ -30,6 +37,7 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     }
 })
 let nuevo_enemigo: Sprite = null
+let torre_nueva: Sprite = null
 let icono_arquero: Sprite = null
 let cursor: Sprite = null
 let enemigo_velocidad = 0
