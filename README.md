@@ -24,3 +24,6 @@ To edit this repository in MakeCode.
 
 * for PXT/arcade
 <script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
+
+
+<img width="1885" height="797" alt="image" src="https://github.com/user-attachments/assets/2e0273b5-b9fd-4b54-8a7e-8d6a8a82c49d" />
