@@ -36,6 +36,19 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         cursor.setFlag(SpriteFlag.Invisible, false)
     }
 })
+spriteutils.createRenderable(5, function (screen2) {
+    for (let value of sprites.allOfKind(SpriteKind.torre)) {
+        if (sprites.readDataString(value, "nombre") == "arquero") {
+            spriteutils.drawCircle(
+            screen2,
+            value.x,
+            value.y,
+            arquero_radio,
+            3
+            )
+        }
+    }
+})
 scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     if (tiles.tileIs(tiles.locationOfSprite(sprite), assets.tile`derecha`)) {
         sprite.vy = 0
@@ -55,23 +68,19 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
         if (Math.percentChance(50)) {
             sprite.vx = 0 - enemigo_velocidad
         }
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite), assets.tile`miMosaico0`)) {
+        sprites.destroy(sprite)
+        info.changeLifeBy(-1)
     } else {
     	
     }
 })
-spriteutils.createRenderable(5, function (screen2) {
-    for (let value of sprites.allOfKind(SpriteKind.torre)) {
-        if (sprites.readDataString(value, "nombre") == "arquero") {
-            spriteutils.drawCircle(
-            screen2,
-            value.x,
-            value.y,
-            arquero_radio,
-            3
-            )
-        }
-    }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
 })
+let projectile: Sprite = null
+let target: Sprite = null
 let nuevo_enemigo: Sprite = null
 let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
@@ -80,7 +89,7 @@ let cursor: Sprite = null
 let arquero_radio = 0
 let enemigo_velocidad = 0
 tiles.loadMap(tiles.createSmallMap(tilemap`map`))
-enemigo_velocidad = 50
+enemigo_velocidad = 20
 tiles.coverAllTiles(assets.tile`abajo1`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`izquierda0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`arriba0`, assets.tile`miMosaico`)
@@ -115,12 +124,13 @@ icono_arquero = sprites.create(img`
     `, SpriteKind.Icono)
 icono_arquero.top = 1
 icono_arquero.left = 80
+info.setLife(20)
 game.onUpdate(function () {
     if (cosa_que_sujetamos) {
         cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(1000, function () {
     nuevo_enemigo = sprites.create(img`
         3 3 3 3 3 3 3 3 
         3 3 8 3 3 3 8 3 
@@ -133,4 +143,19 @@ game.onUpdateInterval(500, function () {
         `, SpriteKind.Enemy)
     tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
     nuevo_enemigo.vy = enemigo_velocidad
+})
+game.onUpdateInterval(500, function () {
+    for (let value of sprites.allOfKind(SpriteKind.torre)) {
+        if (sprites.readDataString(value, "nombre") == "arquero" && value != cosa_que_sujetamos) {
+            target = spriteutils.getSpritesWithin(SpriteKind.Enemy, arquero_radio, value)._pickRandom()
+            if (target) {
+                projectile = sprites.createProjectileFromSprite(img`
+                    4 4 
+                    4 4 
+                    `, value, 0, 0)
+                spriteutils.setVelocityAtAngle(projectile, spriteutils.angleFrom(value, target), 100)
+                projectile.setFlag(SpriteFlag.GhostThroughWalls, true)
+            }
+        }
+    }
 })
