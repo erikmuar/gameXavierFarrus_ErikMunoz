@@ -77,7 +77,10 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(sprite)
-    sprites.destroy(otherSprite)
+    sprites.changeDataNumberBy(otherSprite, "vida", -1)
+    if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
+        sprites.destroy(otherSprite)
+    }
 })
 let projectile: Sprite = null
 let target: Sprite = null
@@ -143,6 +146,7 @@ game.onUpdateInterval(1000, function () {
         `, SpriteKind.Enemy)
     tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
     nuevo_enemigo.vy = enemigo_velocidad
+    sprites.setDataNumber(nuevo_enemigo, "vida", 2)
 })
 game.onUpdateInterval(500, function () {
     for (let value of sprites.allOfKind(SpriteKind.torre)) {
