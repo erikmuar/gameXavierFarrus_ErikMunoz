@@ -9,8 +9,31 @@ function hacer_torre (nombre: string, imagen: Image, coste: number) {
     return torre_nueva
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (cursor.overlapsWith(icono_arquero)) {
-    	
+    if (!(cosa_que_sujetamos)) {
+        if (cursor.overlapsWith(icono_arquero)) {
+            cosa_que_sujetamos = hacer_torre("arquero", img`
+                . . . . . . f f . . . . 
+                . . . . f f 9 9 f . . . 
+                . . . f 9 9 9 9 9 f . . 
+                . . . f 9 9 9 9 9 9 f . 
+                . . f 9 9 9 9 9 9 9 f . 
+                . f 9 9 9 9 9 9 9 9 9 f 
+                . f f f 1 f 1 f 1 f f . 
+                . . . . 1 f 1 f 1 . . . 
+                . . . . 1 1 3 1 1 . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                . . . . e e e e e . . . 
+                `, 1)
+            cursor.setFlag(SpriteFlag.Invisible, true)
+        }
+    } else {
+        cosa_que_sujetamos = [][0]
+        cursor.setFlag(SpriteFlag.Invisible, false)
     }
 })
 scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
@@ -37,6 +60,7 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     }
 })
 let nuevo_enemigo: Sprite = null
+let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
 let icono_arquero: Sprite = null
 let cursor: Sprite = null
@@ -76,6 +100,11 @@ icono_arquero = sprites.create(img`
     `, SpriteKind.Icono)
 icono_arquero.top = 1
 icono_arquero.left = 80
+game.onUpdate(function () {
+    if (cosa_que_sujetamos) {
+        cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
+    }
+})
 game.onUpdateInterval(500, function () {
     nuevo_enemigo = sprites.create(img`
         3 3 3 3 3 3 3 3 
