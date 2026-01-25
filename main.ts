@@ -40,6 +40,9 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         cursor.setFlag(SpriteFlag.Invisible, false)
     }
 })
+info.onCountdownEnd(function () {
+    startSwarm()
+})
 spriteutils.createRenderable(5, function (screen2) {
     for (let value of sprites.allOfKind(SpriteKind.torre)) {
         if (sprites.readDataString(value, "nombre") == "arquero") {
@@ -77,6 +80,12 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
         info.changeLifeBy(-1)
     } else {
     	
+    }
+})
+sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
+    swarm_left_to_destroy += 1
+    if (swarm_left_to_spawn == 0 && swarm_left_to_destroy == 0) {
+        info.startCountdown(10)
     }
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -133,10 +142,10 @@ icono_arquero = sprites.create(img`
     6 9 9 9 9 9 9 6 
     . 6 6 6 6 6 6 . 
     `, SpriteKind.Icono)
-icono_arquero.top = 1
-icono_arquero.left = 80
+icono_arquero.top = 2
+icono_arquero.left = 120
 info.setLife(20)
-startSwarm()
+info.startCountdown(30)
 game.onUpdate(function () {
     if (cosa_que_sujetamos) {
         cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
