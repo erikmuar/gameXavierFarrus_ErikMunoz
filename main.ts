@@ -2,6 +2,10 @@ namespace SpriteKind {
     export const Icono = SpriteKind.create()
     export const torre = SpriteKind.create()
 }
+function startSwarm () {
+    swarm_left_to_spawn = swarmTotal
+    swarm_left_to_destroy = swarmTotal
+}
 function hacer_torre (nombre: string, imagen: Image, coste: number) {
     torre_nueva = sprites.create(imagen, SpriteKind.torre)
     sprites.setDataString(torre_nueva, "nombre", nombre)
@@ -87,9 +91,12 @@ let target: Sprite = null
 let nuevo_enemigo: Sprite = null
 let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
+let swarm_left_to_destroy = 0
+let swarm_left_to_spawn = 0
 let icono_arquero: Sprite = null
 let cursor: Sprite = null
 let arquero_radio = 0
+let swarmTotal = 0
 let enemigo_velocidad = 0
 tiles.loadMap(tiles.createSmallMap(tilemap`map`))
 enemigo_velocidad = 20
@@ -98,6 +105,7 @@ tiles.coverAllTiles(assets.tile`izquierda0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`arriba0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`derecha`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`doblesentido`, assets.tile`miMosaico`)
+swarmTotal = 10
 arquero_radio = 24
 cursor = sprites.create(img`
     . . . . . . . . . f . . 
@@ -128,25 +136,29 @@ icono_arquero = sprites.create(img`
 icono_arquero.top = 1
 icono_arquero.left = 80
 info.setLife(20)
+startSwarm()
 game.onUpdate(function () {
     if (cosa_que_sujetamos) {
         cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
     }
 })
 game.onUpdateInterval(1000, function () {
-    nuevo_enemigo = sprites.create(img`
-        3 3 3 3 3 3 3 3 
-        3 3 8 3 3 3 8 3 
-        3 3 3 3 3 3 3 3 
-        3 3 3 3 3 3 3 3 
-        3 8 8 3 3 3 3 3 
-        3 3 8 8 3 3 3 3 
-        3 3 3 8 8 8 3 3 
-        3 3 3 3 3 3 3 3 
-        `, SpriteKind.Enemy)
-    tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
-    nuevo_enemigo.vy = enemigo_velocidad
-    sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+    if (swarm_left_to_spawn > 0) {
+        swarm_left_to_spawn += -1
+        nuevo_enemigo = sprites.create(img`
+            3 3 3 3 3 3 3 3 
+            3 3 8 3 3 3 8 3 
+            3 3 3 3 3 3 3 3 
+            3 3 3 3 3 3 3 3 
+            3 8 8 3 3 3 3 3 
+            3 3 8 8 3 3 3 3 
+            3 3 3 8 8 8 3 3 
+            3 3 3 3 3 3 3 3 
+            `, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
+        nuevo_enemigo.vy = enemigo_velocidad
+        sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+    }
 })
 game.onUpdateInterval(500, function () {
     for (let value of sprites.allOfKind(SpriteKind.torre)) {
