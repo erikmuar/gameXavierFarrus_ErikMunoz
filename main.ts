@@ -15,25 +15,28 @@ function hacer_torre (nombre: string, imagen: Image, coste: number) {
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (!(cosa_que_sujetamos)) {
         if (cursor.overlapsWith(icono_arquero)) {
-            cosa_que_sujetamos = hacer_torre("arquero", img`
-                . . . . . . f f . . . . 
-                . . . . f f 9 9 f . . . 
-                . . . f 9 9 9 9 9 f . . 
-                . . . f 9 9 9 9 9 9 f . 
-                . . f 9 9 9 9 9 9 9 f . 
-                . f 9 9 9 9 9 9 9 9 9 f 
-                . f f f 1 f 1 f 1 f f . 
-                . . . . 1 f 1 f 1 . . . 
-                . . . . 1 1 3 1 1 . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                . . . . e e e e e . . . 
-                `, 1)
-            cursor.setFlag(SpriteFlag.Invisible, true)
+            if (info.score() >= 20) {
+                cosa_que_sujetamos = hacer_torre("arquero", img`
+                    . . . . . . f f . . . . 
+                    . . . . f f 9 9 f . . . 
+                    . . . f 9 9 9 9 9 f . . 
+                    . . . f 9 9 9 9 9 9 f . 
+                    . . f 9 9 9 9 9 9 9 f . 
+                    . f 9 9 9 9 9 9 9 9 9 f 
+                    . f f f 1 f 1 f 1 f f . 
+                    . . . . 1 f 1 f 1 . . . 
+                    . . . . 1 1 3 1 1 . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    . . . . e e e e e . . . 
+                    `, 10)
+                cursor.setFlag(SpriteFlag.Invisible, true)
+                info.changeScoreBy(-20)
+            }
         }
     } else {
         cosa_que_sujetamos = [][0]
@@ -83,7 +86,7 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     }
 })
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
-    swarm_left_to_destroy += 1
+    swarm_left_to_destroy += -1
     if (swarm_left_to_spawn == 0 && swarm_left_to_destroy == 0) {
         info.startCountdown(10)
     }
@@ -93,6 +96,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     sprites.changeDataNumberBy(otherSprite, "vida", -1)
     if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
         sprites.destroy(otherSprite)
+        info.changeScoreBy(1)
     }
 })
 let projectile: Sprite = null
@@ -146,6 +150,7 @@ icono_arquero.top = 2
 icono_arquero.left = 120
 info.setLife(20)
 info.startCountdown(30)
+info.setScore(80)
 game.onUpdate(function () {
     if (cosa_que_sujetamos) {
         cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
