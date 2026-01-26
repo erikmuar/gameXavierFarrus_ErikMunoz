@@ -3,8 +3,11 @@ namespace SpriteKind {
     export const torre = SpriteKind.create()
 }
 function startSwarm () {
+    let elite_total = 0
     swarm_left_to_spawn = swarmTotal
     swarm_left_to_destroy = swarmTotal
+    elite_left_to_spawn = elite_total
+    elite_left_to_destroy = elite_total
 }
 function hacer_torre (nombre: string, imagen: Image, coste: number) {
     torre_nueva = sprites.create(imagen, SpriteKind.torre)
@@ -19,7 +22,7 @@ spriteutils.createRenderable(5, function (screen2) {
         }
     }
     for (let value2 of list2) {
-        screen2.drawLine(value2[0].x, value2[0].y, value2[1].x, value2[1].y, 5)
+        screen2.drawLine(value2[0].x + randint(-1, 1), value2[0].y + randint(-1, 1), value2[1].x, value2[1].y, 5)
     }
 })
 function daño_electrical (sprite: Sprite, daño: number) {
@@ -141,6 +144,8 @@ let nuevo_enemigo: Sprite = null
 let target: Sprite = null
 let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
+let elite_left_to_destroy = 0
+let elite_left_to_spawn = 0
 let swarm_left_to_destroy = 0
 let swarm_left_to_spawn = 0
 let list2: Sprite[][] = []
@@ -222,7 +227,8 @@ game.onUpdateInterval(2000, function () {
     })
 })
 game.onUpdateInterval(1000, function () {
-    if (swarm_left_to_spawn > 0) {
+    let velocidad_elite: number;
+if (swarm_left_to_spawn > 0) {
         swarm_left_to_spawn += -1
         nuevo_enemigo = sprites.create(img`
             3 3 3 3 3 3 3 3 
@@ -237,6 +243,16 @@ game.onUpdateInterval(1000, function () {
         tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
         nuevo_enemigo.vy = enemigo_velocidad
         sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+    } else if (elite_left_to_spawn > 0) {
+        velocidad_elite = 0
+        elite_left_to_spawn += -1
+        nuevo_enemigo = sprites.create(assets.image`Elite`, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
+        nuevo_enemigo.vy = velocidad_elite
+        sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+        sprites.setDataBoolean(nuevo_enemigo, "elite", true)
+    } else {
+    	
     }
 })
 game.onUpdateInterval(500, function () {
