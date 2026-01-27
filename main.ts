@@ -3,7 +3,6 @@ namespace SpriteKind {
     export const torre = SpriteKind.create()
 }
 function startSwarm () {
-    let elite_total = 0
     swarm_left_to_spawn = swarmTotal
     swarm_left_to_destroy = swarmTotal
     elite_left_to_spawn = elite_total
@@ -123,15 +122,21 @@ function hacer_rayo (fuente: Sprite, daño2: number, golpe: Sprite[]) {
         daño_electrical(fuente, daño2)
         for (let value3 of spriteutils.getSpritesWithin(SpriteKind.Enemy, 16, fuente)) {
             if (golpe.indexOf(value3) == -1) {
-                hacer_rayo(value3, daño2 - 2, golpe)
+                hacer_rayo(value3, daño2 / 2, golpe)
                 list2.push([fuente, value3])
             }
         }
     }
 }
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite3) {
-    swarm_left_to_destroy += -1
-    if (swarm_left_to_spawn == 0 && swarm_left_to_destroy == 0) {
+    if (sprites.readDataBoolean(sprite3, "elite")) {
+        elite_left_to_destroy += -1
+    } else {
+        swarm_left_to_destroy += -1
+    }
+    if (swarm_left_to_spawn == 0 && swarm_left_to_destroy == 0 && (elite_left_to_destroy == 0 && elite_left_to_spawn == 0)) {
+        swarmTotal += 5
+        elite_total += 2
         info.startCountdown(10)
     }
 })
@@ -145,6 +150,7 @@ let target: Sprite = null
 let cosa_que_sujetamos: Sprite = null
 let torre_nueva: Sprite = null
 let elite_left_to_destroy = 0
+let elite_total = 0
 let elite_left_to_spawn = 0
 let swarm_left_to_destroy = 0
 let swarm_left_to_spawn = 0
@@ -157,6 +163,7 @@ let enemigo_velocidad = 0
 let arquero_radio = 0
 tiles.loadMap(tiles.createSmallMap(tilemap`map`))
 enemigo_velocidad = 20
+let elite_velocidad = 30
 tiles.coverAllTiles(assets.tile`abajo1`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`izquierda0`, assets.tile`miMosaico`)
 tiles.coverAllTiles(assets.tile`arriba0`, assets.tile`miMosaico`)
@@ -205,7 +212,7 @@ icono_electric = sprites.create(img`
 icono_electric.top = 2
 icono_electric.left = 130
 info.setLife(20)
-info.startCountdown(30)
+info.startCountdown(1)
 info.setScore(80)
 list2 = []
 game.onUpdate(function () {
@@ -218,7 +225,7 @@ game.onUpdateInterval(2000, function () {
         if (sprites.readDataString(value4, "nombre") == "electric" && value4 != cosa_que_sujetamos) {
             target = spriteutils.getSpritesWithin(SpriteKind.Enemy, arquero_radio, value4)._pickRandom()
             if (target) {
-                hacer_rayo(target, 6, [])
+                hacer_rayo(target, 100, [])
             }
         }
     }
@@ -242,14 +249,14 @@ if (swarm_left_to_spawn > 0) {
             `, SpriteKind.Enemy)
         tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
         nuevo_enemigo.vy = enemigo_velocidad
-        sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+        sprites.setDataNumber(nuevo_enemigo, "vida", 4)
     } else if (elite_left_to_spawn > 0) {
         velocidad_elite = 0
         elite_left_to_spawn += -1
-        nuevo_enemigo = sprites.create(assets.image`Elite`, SpriteKind.Enemy)
+        nuevo_enemigo = sprites.create(assets.image`elite`, SpriteKind.Enemy)
         tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
-        nuevo_enemigo.vy = velocidad_elite
-        sprites.setDataNumber(nuevo_enemigo, "vida", 2)
+        nuevo_enemigo.vy = elite_velocidad
+        sprites.setDataNumber(nuevo_enemigo, "vida", 8)
         sprites.setDataBoolean(nuevo_enemigo, "elite", true)
     } else {
     	
