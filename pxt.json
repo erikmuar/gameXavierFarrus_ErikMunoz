@@ -6,7 +6,8 @@
         "tilemaps": "github:microsoft/pxt-tilemaps#v1.12.0",
         "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.2.1",
         "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.5.0",
-        "Timers": "github:microsoft/arcade-timers#v1.1.0"
+        "Timers": "github:microsoft/arcade-timers#v1.1.0",
+        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.0.1"
     },
     "files": [
         "main.blocks",
