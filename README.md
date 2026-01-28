@@ -2,13 +2,17 @@
 
 La aldea de La Casona del Olivar tiene una maldición, por la noche aparecen monstruos que quieren entrar en casa de la gente para comérselos, pero hay algunos aldeanos dispuestos a defender su hogar por monedas.
 Si sobreviven 5 rondas amanece y los monstruos dejan de aparecer
-Tenemos dos personajes principales que son el arquero y el mago electrico, que son los defensores de la aldea.
+Tenemos dos personajes principales que son el arquero y el mago eléctrico, que son los defensores de la aldea.
 Aparte tenemos dos enemigos, uno de ellos es el esbirro y el otro es el elite.
+
 <img width="268" height="234" alt="image" src="https://github.com/user-attachments/assets/afb2c44a-5030-4809-b547-2fe2f7926221" />
 
 
 # Video
 https://youtu.be/WCfRI3HXY2Q
+
+
+
 
 
 > Open this page at [https://erikmuar.github.io/gamexavierfarrus_erikmunoz/](https://erikmuar.github.io/gamexavierfarrus_erikmunoz/)
