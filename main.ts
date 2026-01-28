@@ -2,32 +2,36 @@ namespace SpriteKind {
     export const Icono = SpriteKind.create()
     export const torre = SpriteKind.create()
 }
-function startSwarm () {
+
+function startSwarm() {
+    
     swarm_left_to_spawn = swarmTotal
     swarm_left_to_destroy = swarmTotal
     elite_left_to_spawn = elite_total
     elite_left_to_destroy = elite_total
 }
-function hacer_torre (nombre: string, imagen: Image, coste: number) {
+
+function hacer_torre(nombre: string, imagen: Image, coste: number): Sprite {
+    
     torre_nueva = sprites.create(imagen, SpriteKind.torre)
     sprites.setDataString(torre_nueva, "nombre", nombre)
     sprites.setDataNumber(torre_nueva, "coste", coste)
     return torre_nueva
 }
-function dificultaddificil () {
-    enemigo_velocidad = 200
-    elite_velocidad = 200
-    info.setLife(100)
+
+function dificultaddificil() {
+    
+    enemigo_velocidad = 30
+    elite_velocidad = 35
+    info.setLife(15)
     info.setScore(80)
     info.startCountdown(1)
 }
-function menu () {
-    myMenu = miniMenu.createMenu(
-    miniMenu.createMenuItem("Facil"),
-    miniMenu.createMenuItem("Medio"),
-    miniMenu.createMenuItem("Dificil")
-    )
-    myMenu.onButtonPressed(controller.A, function (selection, selectedIndex) {
+
+function menu() {
+    
+    myMenu = miniMenu.createMenu(miniMenu.createMenuItem("Facil"), miniMenu.createMenuItem("Medio"), miniMenu.createMenuItem("Dificil"))
+    myMenu.onButtonPressed(controller.A, function on_button_pressed(selection: any, selectedIndex: any) {
         if (selectedIndex == 0) {
             dificultadfacil()
         } else if (selectedIndex == 1) {
@@ -35,121 +39,147 @@ function menu () {
         } else if (selectedIndex == 2) {
             dificultaddificil()
         } else {
-        	
+            
         }
+        
         myMenu.close()
     })
 }
-spriteutils.createRenderable(5, function (screen2) {
+
+spriteutils.createRenderable(5, function on_create_renderable(screen2: Image) {
     for (let value of sprites.allOfKind(SpriteKind.torre)) {
         if (sprites.readDataString(value, "nombre") == "arquero") {
             spriteutils.drawCircle(screen2, value.x, value.y, arquero_radio, 3)
         }
+        
     }
     for (let value2 of list2) {
         screen2.drawLine(value2[0].x + randint(-1, 1), value2[0].y + randint(-1, 1), value2[1].x, value2[1].y, 5)
     }
 })
-function daño_electrical (sprite: Sprite, daño: number) {
+function daño_electrical(sprite: Sprite, daño: number) {
     sprites.changeDataNumberBy(sprite, "vida", 0 - daño)
     if (sprites.readDataNumber(sprite, "vida") <= 0) {
         sprites.destroy(sprite)
         info.changeScoreBy(1)
     }
+    
 }
-scene.onHitWall(SpriteKind.Enemy, function (sprite2, location) {
-    if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`derecha`)) {
+
+scene.onHitWall(SpriteKind.Enemy, function on_hit_wall(sprite2: Sprite, location: tiles.Location) {
+    if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            derecha
+            `)) {
         sprite2.vy = 0
         sprite2.vx = enemigo_velocidad
-    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`abajo1`)) {
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            abajo1
+            `)) {
         sprite2.vy = enemigo_velocidad
         sprite2.vx = 0
-    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`izquierda0`)) {
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            izquierda0
+            `)) {
         sprite2.vy = 0
         sprite2.vx = 0 - enemigo_velocidad
-    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`arriba0`)) {
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            arriba0
+            `)) {
         sprite2.vy = 0 - enemigo_velocidad
         sprite2.vx = 0
-    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`doblesentido`)) {
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            doblesentido
+            `)) {
         sprite2.vy = 0
         sprite2.vx = enemigo_velocidad
         if (Math.percentChance(50)) {
             sprite2.vx = 0 - enemigo_velocidad
         }
-    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`miMosaico0`)) {
+        
+    } else if (tiles.tileIs(tiles.locationOfSprite(sprite2), assets.tile`
+            miMosaico0
+            `)) {
         sprites.destroy(sprite2)
         info.changeLifeBy(-1)
     } else {
-    	
+        
     }
+    
 })
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (!(cosa_que_sujetamos)) {
+controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
+    
+    if (!cosa_que_sujetamos) {
         if (cursor.overlapsWith(icono_arquero)) {
             if (info.score() >= 20) {
                 cosa_que_sujetamos = hacer_torre("arquero", img`
-                    . . . . . . f f . . . . 
-                    . . . . f f 9 9 f . . . 
-                    . . . f 9 9 9 9 9 f . . 
-                    . . . f 9 9 9 9 9 9 f . 
-                    . . f 9 9 9 9 9 9 9 f . 
-                    . f 9 9 9 9 9 9 9 9 9 f 
-                    . f f f 1 f 1 f 1 f f . 
-                    . . . . 1 f 1 f 1 . . . 
-                    . . . . 1 1 3 1 1 . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    . . . . e e e e e . . . 
-                    `, 10)
+                        . . . . . . f f . . . .
+                        . . . . f f 9 9 f . . .
+                        . . . f 9 9 9 9 9 f . .
+                        . . . f 9 9 9 9 9 9 f .
+                        . . f 9 9 9 9 9 9 9 f .
+                        . f 9 9 9 9 9 9 9 9 9 f
+                        . f f f 1 f 1 f 1 f f .
+                        . . . . 1 f 1 f 1 . . .
+                        . . . . 1 1 3 1 1 . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        . . . . e e e e e . . .
+                        `, 10)
                 cursor.setFlag(SpriteFlag.Invisible, true)
                 info.changeScoreBy(-20)
             }
+            
         } else if (cursor.overlapsWith(icono_electric)) {
             if (info.score() >= 20) {
                 cosa_que_sujetamos = hacer_torre("electric", img`
-                    . . . . . . f f . . . . 
-                    . . . . f f 7 7 f . . . 
-                    . . . f 7 7 7 7 7 f . . 
-                    . . . f 7 7 7 7 7 7 f . 
-                    . . f 7 7 7 7 7 7 7 f . 
-                    . f 7 7 7 7 7 7 7 7 7 f 
-                    . f f f 1 2 1 2 1 f f . 
-                    . . . . 1 2 1 2 1 . . . 
-                    . . . . 1 1 3 1 1 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    . . . . 9 9 9 9 9 . . . 
-                    `, 10)
+                        . . . . . . f f . . . .
+                        . . . . f f 7 7 f . . .
+                        . . . f 7 7 7 7 7 f . .
+                        . . . f 7 7 7 7 7 7 f .
+                        . . f 7 7 7 7 7 7 7 f .
+                        . f 7 7 7 7 7 7 7 7 7 f
+                        . f f f 1 2 1 2 1 f f .
+                        . . . . 1 2 1 2 1 . . .
+                        . . . . 1 1 3 1 1 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        . . . . 9 9 9 9 9 . . .
+                        `, 10)
                 cursor.setFlag(SpriteFlag.Invisible, true)
                 info.changeScoreBy(-40)
             }
+            
         } else {
-        	
+            
         }
+        
     } else {
         cosa_que_sujetamos = [][0]
         cursor.setFlag(SpriteFlag.Invisible, false)
     }
+    
 })
-function dificultadfacil () {
+function dificultadfacil() {
+    
     enemigo_velocidad = 15
     elite_velocidad = 20
     info.setLife(25)
-    info.setScore(80)
+    info.setScore(100)
     info.startCountdown(1)
 }
-info.onCountdownEnd(function () {
+
+info.onCountdownEnd(function on_countdown_end() {
     startSwarm()
 })
-function hacer_rayo (fuente: Sprite, daño2: number, golpe: Sprite[]) {
+function hacer_rayo(fuente: Sprite, daño2: number, golpe: Sprite[]) {
     if (daño2 > 0) {
         golpe.push(fuente)
         daño_electrical(fuente, daño2)
@@ -158,15 +188,20 @@ function hacer_rayo (fuente: Sprite, daño2: number, golpe: Sprite[]) {
                 hacer_rayo(value3, daño2 / 2, golpe)
                 list2.push([fuente, value3])
             }
+            
         }
     }
+    
 }
-sprites.onDestroyed(SpriteKind.Enemy, function (sprite3) {
+
+sprites.onDestroyed(SpriteKind.Enemy, function on_on_destroyed(sprite3: Sprite) {
+    
     if (sprites.readDataBoolean(sprite3, "elite")) {
         elite_left_to_destroy += -1
     } else {
         swarm_left_to_destroy += -1
     }
+    
     if (swarm_left_to_spawn == 0 && swarm_left_to_destroy == 0 && (elite_left_to_destroy == 0 && elite_left_to_spawn == 0)) {
         if (ronda_actual < ronda_maxima) {
             ronda_actual += 1
@@ -177,30 +212,34 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite3) {
             cursor.setFlag(SpriteFlag.Invisible, true)
             icono_arquero.setFlag(SpriteFlag.Invisible, true)
             icono_electric.setFlag(SpriteFlag.Invisible, true)
-            game.splash("Ha amanecido! Han sobrevivido:" + ("" + info.life()))
+            game.splash("Ha amanecido! Han sobrevivido:" + ("" + ("" + info.life())))
             game.over(true)
         }
+        
     }
+    
 })
-function dificultadmedia () {
-    enemigo_velocidad = 200
-    elite_velocidad = 200
-    info.setLife(200)
-    info.setScore(80)
+function dificultadmedia() {
+    
+    enemigo_velocidad = 20
+    elite_velocidad = 25
+    info.setLife(20)
+    info.setScore(90)
     info.startCountdown(1)
 }
-sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite4, otherSprite) {
+
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function on_on_overlap(sprite4: Sprite, otherSprite: Sprite) {
     sprites.destroy(sprite4)
     daño_electrical(otherSprite, 1)
 })
-let projectile: Sprite = null
-let nuevo_enemigo: Sprite = null
-let target: Sprite = null
-let cosa_que_sujetamos: Sprite = null
-let myMenu: miniMenu.MenuSprite = null
+let projectile : Sprite = null
+let nuevo_enemigo : Sprite = null
+let target : Sprite = null
+let cosa_que_sujetamos : Sprite = null
+let myMenu : miniMenu.MenuSprite = null
 let elite_velocidad = 0
 let enemigo_velocidad = 0
-let torre_nueva: Sprite = null
+let torre_nueva : Sprite = null
 let elite_left_to_destroy = 0
 let elite_total = 0
 let elite_left_to_spawn = 0
@@ -208,10 +247,10 @@ let swarm_left_to_destroy = 0
 let swarm_left_to_spawn = 0
 let ronda_maxima = 0
 let ronda_actual = 0
-let list2: Sprite[][] = []
-let icono_electric: Sprite = null
-let icono_arquero: Sprite = null
-let cursor: Sprite = null
+let list2 : Sprite[][] = []
+let icono_electric : Sprite = null
+let icono_arquero : Sprite = null
+let cursor : Sprite = null
 let swarmTotal = 0
 let arquero_radio = 0
 scene.setBackgroundImage(img`
@@ -463,125 +502,161 @@ scene.setBackgroundImage(img`
     ................................................................................................................................................................
     ................................................................................................................................................................
     `)
-tiles.loadMap(tiles.createSmallMap(tilemap`map`))
-tiles.coverAllTiles(assets.tile`abajo1`, assets.tile`myTile2`)
-tiles.coverAllTiles(assets.tile`izquierda0`, assets.tile`myTile2`)
-tiles.coverAllTiles(assets.tile`arriba0`, assets.tile`myTile2`)
-tiles.coverAllTiles(assets.tile`derecha`, assets.tile`myTile2`)
-tiles.coverAllTiles(assets.tile`doblesentido`, assets.tile`myTile2`)
+tiles.loadMap(tiles.createSmallMap(tilemap`
+    map
+    `))
+tiles.coverAllTiles(assets.tile`
+        abajo1
+        `, assets.tile`
+        myTile2
+        `)
+tiles.coverAllTiles(assets.tile`
+        izquierda0
+        `, assets.tile`
+        myTile2
+        `)
+tiles.coverAllTiles(assets.tile`
+        arriba0
+        `, assets.tile`
+        myTile2
+        `)
+tiles.coverAllTiles(assets.tile`
+        derecha
+        `, assets.tile`
+        myTile2
+        `)
+tiles.coverAllTiles(assets.tile`
+        doblesentido
+        `, assets.tile`
+        myTile2
+        `)
 swarmTotal = 10
 arquero_radio = 24
 cursor = sprites.create(img`
-    . . . . . . . . . f . . 
-    . . . . . . . . f 1 f . 
-    . . . . . . . . f 1 f . 
-    . . . . . . . . f 1 f . 
-    . f . f . f . f f 1 f . 
-    f 1 f 1 f 1 f 1 1 1 f . 
-    f 1 1 1 1 1 1 1 1 1 1 f 
-    f 1 1 1 1 1 1 1 1 1 1 f 
-    f 1 1 1 1 1 1 1 1 1 1 f 
-    f 1 1 1 1 1 1 1 1 1 1 f 
-    . f 1 1 1 1 1 1 1 1 f . 
-    . . f f f f f f f f . . 
-    `, SpriteKind.Player)
+        . . . . . . . . . f . .
+        . . . . . . . . f 1 f .
+        . . . . . . . . f 1 f .
+        . . . . . . . . f 1 f .
+        . f . f . f . f f 1 f .
+        f 1 f 1 f 1 f 1 1 1 f .
+        f 1 1 1 1 1 1 1 1 1 1 f
+        f 1 1 1 1 1 1 1 1 1 1 f
+        f 1 1 1 1 1 1 1 1 1 1 f
+        f 1 1 1 1 1 1 1 1 1 1 f
+        . f 1 1 1 1 1 1 1 1 f .
+        . . f f f f f f f f . .
+        `, SpriteKind.Player)
 controller.moveSprite(cursor, 70, 70)
 cursor.setFlag(SpriteFlag.GhostThroughWalls, true)
 icono_arquero = sprites.create(img`
-    . 6 6 6 6 6 6 . 
-    6 9 9 9 9 9 9 6 
-    6 9 6 6 6 6 9 6 
-    6 6 6 6 6 6 6 6 
-    6 9 f 1 1 f 9 6 
-    6 9 1 3 3 1 9 6 
-    6 9 9 9 9 9 9 6 
-    . 6 6 6 6 6 6 . 
-    `, SpriteKind.Icono)
+        . 6 6 6 6 6 6 .
+        6 9 9 9 9 9 9 6
+        6 9 6 6 6 6 9 6
+        6 6 6 6 6 6 6 6
+        6 9 f 1 1 f 9 6
+        6 9 1 3 3 1 9 6
+        6 9 9 9 9 9 9 6
+        . 6 6 6 6 6 6 .
+        `, SpriteKind.Icono)
 icono_arquero.top = 2
 icono_arquero.left = 110
 icono_electric = sprites.create(img`
-    . 7 7 7 7 7 7 . 
-    7 6 6 6 6 6 6 7 
-    7 6 7 7 7 7 6 7 
-    7 7 7 7 7 7 7 7 
-    7 6 2 1 1 2 6 7 
-    7 6 1 3 3 1 6 7 
-    7 6 6 6 6 6 6 7 
-    . 7 7 7 7 7 7 . 
-    `, SpriteKind.Icono)
+        . 7 7 7 7 7 7 .
+        7 6 6 6 6 6 6 7
+        7 6 7 7 7 7 6 7
+        7 7 7 7 7 7 7 7
+        7 6 2 1 1 2 6 7
+        7 6 1 3 3 1 6 7
+        7 6 6 6 6 6 6 7
+        . 7 7 7 7 7 7 .
+        `, SpriteKind.Icono)
 icono_electric.top = 2
 icono_electric.left = 130
 list2 = []
 ronda_actual = 1
-ronda_maxima = 2
-game.onUpdate(function () {
+ronda_maxima = 5
+game.onUpdate(function on_on_update() {
     if (cosa_que_sujetamos) {
         cosa_que_sujetamos.setPosition(cursor.x, cursor.y)
     }
+    
 })
-game.onUpdateInterval(2000, function () {
+game.onUpdateInterval(2000, function on_update_interval() {
+    
     for (let value4 of sprites.allOfKind(SpriteKind.torre)) {
         if (sprites.readDataString(value4, "nombre") == "electric" && value4 != cosa_que_sujetamos) {
             target = spriteutils.getSpritesWithin(SpriteKind.Enemy, arquero_radio, value4)._pickRandom()
             if (target) {
                 hacer_rayo(target, 100, [])
             }
+            
         }
+        
     }
-    timer.after(500, function () {
+    timer.after(500, function on_after() {
+        
         list2 = []
     })
 })
-game.onUpdateInterval(1000, function () {
+game.onUpdateInterval(1000, function on_update_interval2() {
     let velocidad_elite: number;
-if (swarm_left_to_spawn > 0) {
+    
+    if (swarm_left_to_spawn > 0) {
         swarm_left_to_spawn += -1
         nuevo_enemigo = sprites.create(img`
-            c c c c c c c c 
-            c c 1 c c c 1 c 
-            c c c c c c c c 
-            c c c c c c c c 
-            c 1 1 c c c c c 
-            c c 1 1 c c c c 
-            c c c 1 1 1 c c 
-            c c c c c c c c 
-            `, SpriteKind.Enemy)
-        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
+                c c c c c c c c
+                c c 1 c c c 1 c
+                c c c c c c c c
+                c c c c c c c c
+                c 1 1 c c c c c
+                c c 1 1 c c c c
+                c c c 1 1 1 c c
+                c c c c c c c c
+                `, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`
+            myTile
+            `)
         nuevo_enemigo.vy = enemigo_velocidad
         sprites.setDataNumber(nuevo_enemigo, "vida", 4)
     } else if (elite_left_to_spawn > 0) {
         velocidad_elite = 0
         elite_left_to_spawn += -1
         nuevo_enemigo = sprites.create(img`
-            2 2 2 2 2 2 2 2 
-            2 2 9 2 2 2 9 2 
-            2 2 2 2 2 2 2 2 
-            2 2 2 2 2 2 2 2 
-            2 9 9 2 2 2 2 2 
-            2 2 9 9 2 2 2 2 
-            2 2 2 9 9 9 2 2 
-            2 2 2 2 2 2 2 2 
-            `, SpriteKind.Enemy)
-        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`myTile`)
+                2 2 2 2 2 2 2 2
+                2 2 9 2 2 2 9 2
+                2 2 2 2 2 2 2 2
+                2 2 2 2 2 2 2 2
+                2 9 9 2 2 2 2 2
+                2 2 9 9 2 2 2 2
+                2 2 2 9 9 9 2 2
+                2 2 2 2 2 2 2 2
+                `, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(nuevo_enemigo, assets.tile`
+            myTile
+            `)
         nuevo_enemigo.vy = elite_velocidad
         sprites.setDataNumber(nuevo_enemigo, "vida", 8)
         sprites.setDataBoolean(nuevo_enemigo, "elite", true)
     } else {
-    	
+        
     }
+    
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(500, function on_update_interval3() {
+    
     for (let value5 of sprites.allOfKind(SpriteKind.torre)) {
         if (sprites.readDataString(value5, "nombre") == "arquero" && value5 != cosa_que_sujetamos) {
             target = spriteutils.getSpritesWithin(SpriteKind.Enemy, arquero_radio, value5)._pickRandom()
             if (target) {
                 projectile = sprites.createProjectileFromSprite(img`
-                    4 4 
-                    4 4 
+                    4 4
+                    4 4
                     `, value5, 0, 0)
                 spriteutils.setVelocityAtAngle(projectile, spriteutils.angleFrom(value5, target), 100)
                 projectile.setFlag(SpriteFlag.GhostThroughWalls, true)
             }
+            
         }
+        
     }
 })
