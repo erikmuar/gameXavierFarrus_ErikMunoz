@@ -134,7 +134,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
             }
             
         } else if (cursor.overlapsWith(icono_electric)) {
-            if (info.score() >= 20) {
+            if (info.score() >= 40) {
                 cosa_que_sujetamos = hacer_torre("electric", img`
                         . . . . . . f f . . . .
                         . . . . f f 7 7 f . . .
